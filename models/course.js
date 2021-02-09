@@ -10,10 +10,28 @@ module.exports = (sequelize) => {
             autoIncrement: true,
         },
         title: {
-            type: DataTypes.STRING
+            type: DataTypes.STRING,
+            allowNull: false,
+            validate: {
+              notNull: {
+                msg: 'A title is required'
+              },
+              notEmpty: {
+                msg: 'Please provide a title'
+              }
+            }
         },
         description: {
-            type: DataTypes.TEXT
+            type: DataTypes.TEXT,
+            allowNull: false,
+            validate: {
+              notNull: {
+                msg: 'A description is required'
+              },
+              notEmpty: {
+                msg: 'Please provide a description'
+              }
+            }
         },
         estimatedTime: {
             type: DataTypes.STRING

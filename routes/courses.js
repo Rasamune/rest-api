@@ -14,8 +14,21 @@ router.get('/courses', asyncHandler(async (req, res, next) => {
     const courses = await Course.findAll({
         include: [{
             model: User,
-            as: 'user'
-        }]
+            as: 'user',
+            attributes: [
+                "id",
+                "firstName",
+                "lastName",
+                "emailAddress"
+            ]
+        }],
+        attributes: [
+            "id",
+            "title",
+            "description",
+            "estimatedTime",
+            "materialsNeeded"
+        ]
     });
     res.status(200).json({ courses });
 }));
@@ -46,8 +59,21 @@ router.get('/courses/:id', asyncHandler(async (req, res, next) => {
     const course = await Course.findByPk(req.params.id, {
         include: [{
             model: User,
-            as: 'user'
-        }]
+            as: 'user',
+            attributes: [
+                "id",
+                "firstName",
+                "lastName",
+                "emailAddress"
+            ]
+        }],
+        attributes: [
+            "id",
+            "title",
+            "description",
+            "estimatedTime",
+            "materialsNeeded"
+        ]
     });
     if (course) {
         res.status(200).json({ course });
@@ -64,6 +90,7 @@ router.put('/courses/:id', authenticateUser, asyncHandler(async (req, res, next)
     try {
         course = await Course.findByPk(req.params.id);
         if(course) {
+            // If course was created by the authenticated user
             if (course.userId === user.id) {
                 await course.update(req.body);
                 res.sendStatus(204);
@@ -91,6 +118,7 @@ router.delete('/courses/:id', authenticateUser, asyncHandler(async (req, res, ne
     try {
         course = await Course.findByPk(req.params.id);
         if(course) {
+            // If course was created by the authenticated user
             if (course.userId === user.id) {
                 await course.destroy();
                 res.sendStatus(204);

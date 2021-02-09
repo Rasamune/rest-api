@@ -11,16 +11,53 @@ module.exports = (sequelize) => {
             autoIncrement: true,
         },
         firstName: {
-            type: DataTypes.STRING
+            type: DataTypes.STRING,
+            allowNull: false,
+            validate: {
+              notNull: {
+                msg: 'A first name is required'
+              },
+              notEmpty: {
+                msg: 'Please provide a first name'
+              }
+            }
         },
         lastName: {
-            type: DataTypes.STRING
+            type: DataTypes.STRING,
+            allowNull: false,
+            validate: {
+              notNull: {
+                msg: 'A last name is required'
+              },
+              notEmpty: {
+                msg: 'Please provide a last name'
+              }
+            }
         },
         emailAddress: {
-            type: DataTypes.STRING
+            type: DataTypes.STRING,
+            allowNull: false,
+            unique: true,
+            validate: {
+                notNull: {
+                    msg: 'An email is required'
+                },
+                isEmail: {
+                    msg: 'A valid email is required'
+                }
+            }
         },
         password: {
             type: DataTypes.STRING,
+            allowNull: false,
+            validate: {
+              notNull: {
+                msg: 'A password is required'
+              },
+              notEmpty: {
+                msg: 'Please provide a password'
+              }
+            },
             set(val) {
                 const hashedPassword = bcrypt.hashSync(val, 10);
                 this.setDataValue('password', hashedPassword);
