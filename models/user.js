@@ -4,6 +4,11 @@ const { Model, DataTypes } = require('sequelize');
 module.exports = (sequelize) => {
     class User extends Model {}
     User.init({
+        id: {
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true,
+        },
         firstName: {
             type: DataTypes.STRING
         },
@@ -22,8 +27,7 @@ module.exports = (sequelize) => {
         User.hasMany(models.User, { 
             as: 'user', // alias
             foreignKey: {
-                fieldName: 'userId',
-                allowNull: false 
+                fieldName: 'userId'
             }
         });
     };
