@@ -4,10 +4,18 @@ const router = express.Router();
 // Middleware to handle async
 const { asyncHandler } = require('../middleware/async-handler');
 
+const { User, Course } = require('../models');
+
 /* GET Courses listing. */
 router.get('/courses', asyncHandler(async (req, res, next) => {
     // Return list of courses including the User that owns each course
-    res.status(200).json({ message: 'List of all courses'});
+    const courses = await Course.findAll({
+        include: [{
+            model: User,
+            as: 'user'
+        }]
+    });
+    res.status(200).json({ courses });
 }));
 
 /* POST Create a new course. */
@@ -20,6 +28,17 @@ router.post('/courses', asyncHandler(async (req, res, next) => {
 /* GET Specified course. */
 router.get('/courses/:id', asyncHandler(async (req, res, next) => {
     // Return the corresponding course along with the User that owns it
+    const course = await Course.findByPk(req.params.id, {
+        include: [{
+            model: User,
+            as: 'user'
+        }]
+    });
+    if (course) {
+        res.status(200).json({ course });
+    } else {
+        res.sendStatus(404);
+    }
     res.status(200).json({ message: 'Selected cours and user that owns it' });
 }));
 
