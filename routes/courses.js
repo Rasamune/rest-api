@@ -95,7 +95,7 @@ router.put('/courses/:id', authenticateUser, asyncHandler(async (req, res, next)
                 await course.update(req.body);
                 res.sendStatus(204);
             } else {
-                res.sendStatus(401).json({ message: "You are not the owner of this course, it cannot be edited by you" })
+                res.sendStatus(403).json({ message: "You are not the owner of this course, it cannot be edited by you" })
             }
         } else {
             res.sendStatus(404);
@@ -123,7 +123,7 @@ router.delete('/courses/:id', authenticateUser, asyncHandler(async (req, res, ne
                 await course.destroy();
                 res.sendStatus(204);
             } else {
-                res.sendStatus(401).json({ message: "You are not the owner of this course, it cannot be deleted by you" })
+                res.sendStatus(403).json({ message: "You are not the owner of this course, it cannot be deleted by you" })
             }
         } else {
             res.sendStatus(404);
