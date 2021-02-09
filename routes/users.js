@@ -4,12 +4,18 @@ const router = express.Router();
 // Middleware to handle async
 const { asyncHandler } = require('../middleware/async-handler');
 const { User } = require('../models');
-//const { authenticateUser } = require('../middleware/auth-user');
+const { authenticateUser } = require('../middleware/auth-user');
 
 /* GET authenticated user. */
-router.get('/users', asyncHandler(async (req, res, next) => {
+router.get('/users', authenticateUser, asyncHandler(async (req, res, next) => {
     // Return the currently authenticated user
-    res.status(200).json({ message: 'User Login'});
+    const user = req.currentUser;
+
+    res.status(200).json({
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.emailAddress,
+    });
 }));
 
 /* POST Create a new user. */
