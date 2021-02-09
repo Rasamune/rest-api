@@ -6,6 +6,8 @@ const { asyncHandler } = require('../middleware/async-handler');
 
 const { User, Course } = require('../models');
 
+const { authenticateUser } = require('../middleware/auth-user');
+
 /* GET Courses listing. */
 router.get('/courses', asyncHandler(async (req, res, next) => {
     // Return list of courses including the User that owns each course
@@ -19,10 +21,23 @@ router.get('/courses', asyncHandler(async (req, res, next) => {
 }));
 
 /* POST Create a new course. */
-router.post('/courses', asyncHandler(async (req, res, next) => {
+router.post('/courses', authenticateUser, asyncHandler(async (req, res, next) => {
     // Create a new course
-    // Set the Location header to the URI for the newly created course
-    res.status(201);
+    const user = req.currentUser;
+    try {
+        req.body.userId = user.id;
+        const course = await Course.create(req.body);
+        
+        // Set the Location header to the URI for the newly created course
+        res.status(201).location(`/courses/${course.id}`).json({ "message": "Course successfully created!" });
+    } catch (error) {
+        if (error.name === 'SequelizeValidationError' || error.name === 'SequelizeUniqueConstraintError') {
+            const errors = error.errors.map(err => err.message);
+            res.status(400).json({ errors });   
+        } else {
+            throw error;
+        }
+    }
 }));
 
 /* GET Specified course. */
@@ -39,18 +54,60 @@ router.get('/courses/:id', asyncHandler(async (req, res, next) => {
     } else {
         res.sendStatus(404);
     }
-    res.status(200).json({ message: 'Selected cours and user that owns it' });
 }));
 
 /* PUT Updated specified course. */
-router.put('/courses/:id', asyncHandler(async (req, res, next) => {
+router.put('/courses/:id', authenticateUser, asyncHandler(async (req, res, next) => {
     // Update corresponding course
-    res.status(204);
+    let course;
+    const user = req.currentUser;
+    try {
+        course = await Course.findByPk(req.params.id);
+        if(course) {
+            if (course.userId === user.id) {
+                await course.update(req.body);
+                res.sendStatus(204);
+            } else {
+                res.sendStatus(401).json({ message: "You are not the owner of this course, it cannot be edited by you" })
+            }
+        } else {
+            res.sendStatus(404);
+        }
+    } catch (error) {
+        if (error.name === 'SequelizeValidationError' || error.name === 'SequelizeUniqueConstraintError') {
+            const errors = error.errors.map(err => err.message);
+            res.status(400).json({ errors });   
+        } else {
+            throw error;
+        }
+    }
 }));
 
 /* DELETE Specified course. */
-router.delete('/courses/:id', asyncHandler(async (req, res, next) => {
+router.delete('/courses/:id', authenticateUser, asyncHandler(async (req, res, next) => {
     // Delete the corresponding course
+    let course;
+    const user = req.currentUser;
+    try {
+        course = await Course.findByPk(req.params.id);
+        if(course) {
+            if (course.userId === user.id) {
+                await course.destroy();
+                res.sendStatus(204);
+            } else {
+                res.sendStatus(401).json({ message: "You are not the owner of this course, it cannot be deleted by you" })
+            }
+        } else {
+            res.sendStatus(404);
+        }
+    } catch (error) {
+        if (error.name === 'SequelizeValidationError' || error.name === 'SequelizeUniqueConstraintError') {
+            const errors = error.errors.map(err => err.message);
+            res.status(400).json({ errors });   
+        } else {
+            throw error;
+        }
+    }
     res.status(204);
 }));
 
