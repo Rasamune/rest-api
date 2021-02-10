@@ -28,14 +28,14 @@ localhost:5000
 
 ## Routes to test
 
-- /api/users GET route that will return the currently authenticated user along with a 200 HTTP status code.
-- /api/users POST route that will create a new user and return a 201 HTTP status code and no content.
+- **/api/users GET** route that will return the currently authenticated user along with a 200 HTTP status code.
+- **/api/users POST** route that will create a new user and return a 201 HTTP status code and no content.
 
-- /api/courses GET route that will return a list of all courses including the User that owns each course and a 200 HTTP status code.
-- /api/courses/:id GET route that will return the corresponding course along with the User that owns that course and a 200 HTTP status code.
-- /api/courses POST route that will create a new course and return a 201 HTTP status code and no content.
-- /api/courses/:id PUT route that will update the corresponding course and return a 204 HTTP status code and no content.
-- /api/courses/:id DELETE route that will delete the corresponding course and return a 204 HTTP status code and no content.
+- **/api/courses GET** route that will return a list of all courses including the User that owns each course and a 200 HTTP status code.
+- **/api/courses/:id** GET route that will return the corresponding course along with the User that owns that course and a 200 HTTP status code.
+- **/api/courses POST** route that will create a new course and return a 201 HTTP status code and no content.
+- **/api/courses/:id** PUT route that will update the corresponding course and return a 204 HTTP status code and no content.
+- **/api/courses/:id** DELETE route that will delete the corresponding course and return a 204 HTTP status code and no content.
 
 ## Technologies Used
 
