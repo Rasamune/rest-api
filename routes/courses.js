@@ -42,7 +42,7 @@ router.post('/courses', authenticateUser, asyncHandler(async (req, res, next) =>
         const course = await Course.create(req.body);
         
         // Set the Location header to the URI for the newly created course
-        res.status(201).location(`/courses/${course.id}`).json({ "message": "Course successfully created!" });
+        res.status(201).location(`/courses/${course.id}`).end();
     } catch (error) {
         if (error.name === 'SequelizeValidationError' || error.name === 'SequelizeUniqueConstraintError') {
             const errors = error.errors.map(err => err.message);

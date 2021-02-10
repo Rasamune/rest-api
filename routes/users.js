@@ -14,7 +14,7 @@ router.get('/users', authenticateUser, asyncHandler(async (req, res, next) => {
     res.status(200).json({
         firstName: user.firstName,
         lastName: user.lastName,
-        email: user.emailAddress,
+        emailAddress: user.emailAddress,
     });
 }));
 
@@ -25,7 +25,7 @@ router.post('/users', asyncHandler(async (req, res, next) => {
         await User.create(req.body);
         
         // Set Location header to "/"
-        res.status(201).location('/').json({ "message": "Account successfully created!" });
+        res.status(201).location('/').end();
     } catch (error) {
         if (error.name === 'SequelizeValidationError' || error.name === 'SequelizeUniqueConstraintError') {
             const errors = error.errors.map(err => err.message);
